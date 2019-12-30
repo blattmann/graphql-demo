@@ -1,4 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
-export default fs.readFileSync(path.resolve(__dirname, './schema.graphql'), { encoding: 'utf8' })
+const schemas = [
+  fs.readFileSync(path.resolve(__dirname, './schema-chat.graphql'), { encoding: 'utf8' }),
+];
+
+export default schemas.join('\n');
