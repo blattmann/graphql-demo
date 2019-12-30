@@ -1,3 +1,7 @@
+import StarWarsAPI from './swapi';
+
 export default function() {
-  return {};
+  return {
+    swapi: new StarWarsAPI(),
+  };
 }

@@ -15,6 +15,50 @@ export default {
     messages: (root, args, { db }) => db.get('messages').value(),
     uploads: (root, args, { db }) => db.get('uploads').value(),
 
+    searchPeople: async (root, { query }, { dataSources } ) => {
+      const result = await dataSources.swapi.searchPeople(query);
+      return result;
+    },
+
+    people: (root, { id }, { dataSources } ) => {
+      return dataSources.swapi.people(id);
+    },
+    films: (root, { id }, { dataSources } ) => {
+      return dataSources.swapi.film(id);
+    },
+  },
+
+  Person: {
+    films(person, undefined, { dataSources }) {
+      return person.films.map(url => dataSources.swapi.followLink(url));
+    },
+    homeworld(person, undefined, { dataSources }) {
+      return dataSources.swapi.followLink(person.homeworld);
+    },
+    starships(person, undefined, { dataSources }) {
+      return person.starships.map(url => dataSources.swapi.followLink(url));
+    },
+    species(person, undefined, { dataSources }) {
+      return person.species.map(url => dataSources.swapi.followLink(url));
+    },
+    vehicles(person, undefined, { dataSources }) {
+      return person.vehicles.map(url => dataSources.swapi.followLink(url));
+    },
+  },
+
+  Planet: {
+    residents(planet, undefined, { dataSources }) {
+      return planet.residents.map(url => dataSources.swapi.followLink(url));
+    },
+  },
+
+  Film: {
+    planets(film, undefined, { dataSources }) {
+      return film.planets.map(url => dataSources.swapi.followLink(url));
+    },
+    characters(film, undefined, { dataSources }) {
+      return film.characters.map(url => dataSources.swapi.followLink(url));
+    },
   },
 
   Mutation: {

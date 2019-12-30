@@ -1,0 +1,14 @@
+type Planet {
+  name: String
+  rotation_period: Int
+  orbital_period: Int
+  diameter: Int
+  climate: String
+  gravity: Float
+  terrain: String
+  surface_water: Int
+  population: String
+  residents: [Person]
+  films: [Film]
+  url: String
+}

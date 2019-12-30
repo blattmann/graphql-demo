@@ -1,0 +1,21 @@
+type Person {
+  name: String
+  height: Int
+  mass: Int
+  hair_color: String
+  skin_color: String
+  eye_color: String
+  birth_year: String
+  gender: String
+  homeworld: Planet
+  url: String
+  films: [Film]
+  species: [Species]
+  vehicles: [Vehicle]
+  starships: [Starship]
+}
+
+extend type Query {
+  searchPeople(query: String!): [Person]
+  people(id: String!): [Person]
+}

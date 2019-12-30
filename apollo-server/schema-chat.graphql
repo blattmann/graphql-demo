@@ -31,12 +31,14 @@ type File {
   encoding: String!
 }
 
+"union Communication = Message | Person"
 
 type Query {
   "Test query with a parameter"
   hello(name: String): String!
   "List of messages sent by users"
   messages: [Message]
+  "messages: [Communication]"
   uploads: [File]
 
 }
