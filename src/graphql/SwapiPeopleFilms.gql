@@ -1,0 +1,10 @@
+query people($query: String!) {
+    searchPeople(query: $query) {
+    name
+    films {
+      title
+      release_date
+      episode_id
+    }   
+  }
+}

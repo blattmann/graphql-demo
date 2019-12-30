@@ -1,0 +1,20 @@
+query people($query: String!) {
+    searchPeople(query: $query) {
+    name
+    gender
+    homeworld {
+      name
+      population
+    }
+    vehicles {
+      name
+    }
+    starships {
+      name
+    }
+    species {
+      name
+    }
+  }
+}
+

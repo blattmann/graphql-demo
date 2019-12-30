@@ -76,43 +76,99 @@
       </template>
     </ApolloMutation>
 
-    <div class="images">
-      <div
-        v-for="file of files"
-        :key="file.id"
-        class="image-item"
-      >
-        <img :src="`${$filesRoot}/${file.path}`" class="image"/>
+    <div
+      class="apollo-example__swapi-people"
+      v-if="!swapiErrors"
+    >
+      <div>
+        Query details:
+        <input
+          v-model="swapiDetails"
+          id="swapiDetailsLore"
+          type="radio"
+          value="lore"
+        />
+        <label
+          class="apollo-example__details-label"
+          for="swapiDetailsLore"
+        >
+          Lore
+        </label>
+        <input
+          v-model="swapiDetails"
+          id="swapiDetailsFilms"
+          type="radio"
+          value="films"
+        />
+        <label
+          class="apollo-example__details-label"
+          for="swapiDetailsFilms"
+        >
+          Films
+        </label>
       </div>
-    </div>
-
-    <div class="image-input">
-      <label for="field-image">Image</label>
       <input
-        id="field-image"
-        type="file"
-        accept="image/*"
-        required
-        @change="onUploadImage"
+        v-model="swapiPeopleQuery"
+        name="query"
       >
+      <div
+        v-if="$apollo.queries.swapiPeople.loading"
+      >
+        Loading...
+      </div>
+      <swapi-person
+        v-else
+        v-for="person in swapiPeople"
+        :key="person.name"
+        :person="person"
+      />
+    </div>
+    <div v-else>
+      An error occured
     </div>
   </div>
 </template>
 
 <script>
-import FILES from '../graphql/Files.gql'
-import UPLOAD_FILE from '../graphql/UploadFile.gql'
+import SWAPI_PEOPLE_FILMS from '../graphql/SwapiPeopleFilms.gql'
+import SWAPI_PEOPLE_LORE from '../graphql/SwapiPeopleLore.gql'
+import SwapiPerson from './SwapiPerson';
 
 export default {
+  components: {
+    SwapiPerson,
+  },
   data () {
     return {
       name: 'Anne',
       newMessage: '',
+      swapiPeopleQuery: '',
+      swapiPeople: [],
+      swapiErrors: false,
+      swapiDetails: 'lore',
     }
   },
 
   apollo: {
-    files: FILES,
+    swapiPeople() {
+      return {
+        query() {
+          return this.swapiDetails === 'lore' ? SWAPI_PEOPLE_LORE : SWAPI_PEOPLE_FILMS;
+        },
+        variables() {
+          return {
+            query: this.swapiPeopleQuery,
+          };
+        },
+        update: res => res.searchPeople,
+        debounce: 500,
+        error: (error) => {
+          this.swapiErrors = true;
+          // eslint-disable-next-line no-console
+          console.log('Error querying swapi for people', error);
+        },
+      };
+    },
   },
 
   computed: {
@@ -130,21 +186,6 @@ export default {
         ],
       }
     },
-
-    async onUploadImage ({ target }) {
-      if (!target.validity.valid) return
-      await this.$apollo.mutate({
-        mutation: UPLOAD_FILE,
-        variables: {
-          file: target.files[0],
-        },
-        update: (store, { data: { singleUpload } }) => {
-          const data = store.readQuery({ query: FILES })
-          data.files.push(singleUpload)
-          store.writeQuery({ query: FILES, data })
-        },
-      })
-    }
   },
 }
 </script>
@@ -195,5 +236,9 @@ label {
 
 .image-input {
   margin: 20px;
+}
+
+label.apollo-example__details-label {
+  display: initial;
 }
 </style>
