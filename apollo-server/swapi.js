@@ -1,10 +1,21 @@
 const { RESTDataSource } = require('apollo-datasource-rest');
 
+const cache = {};
+
 class StarWarsAPI extends RESTDataSource {
   constructor() {
     super();
     this.baseURL = 'https://swapi.co/api/';
     this.isValidUrl = new RegExp(`^${this.baseURL.replace(/\./g, '\\.')}[a-z]+/\\d+/?$`);
+  }
+
+  get(url) {
+    let cached = cache[url];
+    if (cached === undefined) {
+      cached = super.get(url);
+      cache[url] = cached;
+    }
+    return cached;
   }
 
   followLink(url) {
