@@ -1,0 +1,18 @@
+type Starship {
+  name: String
+  model: String
+  manufacturer: String
+  cost_in_credits: Int
+  length: Float
+  max_atmosphering_speed: Int
+  crew: Int
+  passengers: Int
+  cargo_capacity: Int
+  consumables: String
+  hyperdrive_rating: Float
+  MGLT: Int
+  starship_class: String
+  pilots: [Person]
+  films: [Film]
+  url: String
+}
